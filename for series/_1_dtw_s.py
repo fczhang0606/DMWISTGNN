@@ -10,7 +10,7 @@ import pywt
 
 
 ###### 小波分解+不同的小波 ######
-# (sym2/db1/db1/coif1) -- 1
+# (///) -- 1
 def disentangle(x, w, l) :  # [B, 1, N, W]
 
     coef = pywt.wavedec(x, w, level=l)  # 返回level+1个数组，第一个数组为逼近系数数组，后面的依次是细节系数数组
