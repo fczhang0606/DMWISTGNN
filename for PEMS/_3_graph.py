@@ -174,7 +174,7 @@ class graphFusion(nn.Module) :
 
         ###### 消融实验-2: 动态图 vs. 静态图 ######
         ### (1)-动态图
-        # return adj
+        return adj
         ### (2)-静态图
         # return adj_sta
 
