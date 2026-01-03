@@ -244,7 +244,7 @@ if __name__ == '__main__' :
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 24        # 1day=24hrs=24/1=24
         args.graph_dims     = 10        # 
@@ -270,7 +270,7 @@ if __name__ == '__main__' :
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 1         # 1day=1/1=1
         args.graph_dims     = 10        # 
@@ -296,7 +296,7 @@ if __name__ == '__main__' :
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 144       # 1day=24hrs=24*60mins=24*60/10=144
         args.graph_dims     = 10        # 
@@ -322,7 +322,7 @@ if __name__ == '__main__' :
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 24        # 1day=24hrs=24/1=24
         args.graph_dims     = 10        # 

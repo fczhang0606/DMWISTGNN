@@ -242,7 +242,7 @@ if __name__ == '__main__' :
         args.horizons       = 12
         args.revin_en       = 0         #           ### 调整，PEMS的效果不佳
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 128       #           ### 调整
         args.granularity    = 288       # 1day=24hrs=24*60mins=24*60/5=288
         args.graph_dims     = 10        # 
@@ -268,7 +268,7 @@ if __name__ == '__main__' :
         args.horizons       = 12
         args.revin_en       = 0         #           ### 调整，PEMS的效果不佳
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 192        #           ### 调整
         args.granularity    = 288       # 1day=24hrs=24*60mins=24*60/5=288
         args.graph_dims     = 10        # 
@@ -294,7 +294,7 @@ if __name__ == '__main__' :
         args.horizons       = 12
         args.revin_en       = 0         #           ### 调整，PEMS的效果不佳
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 128        #           ### 调整
         args.granularity    = 288       # 1day=24hrs=24*60mins=24*60/5=288
         args.graph_dims     = 10        # 
@@ -320,7 +320,7 @@ if __name__ == '__main__' :
         args.horizons       = 12
         args.revin_en       = 0         #           ### 调整，PEMS的效果不佳
         args.wavelets       = 'haar dmey db4 sym4 coif4'
-        args.level          = 3
+        args.level          = 2
         args.h_channels     = 256       #           ### 调整
         args.granularity    = 288       # 1day=24hrs=24*60mins=24*60/5=288
         args.graph_dims     = 10        # 
