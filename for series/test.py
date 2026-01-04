@@ -19,6 +19,8 @@
 # https://pytorch.org/get-started/previous-versions/
 # conda install \
 # python=3.8 pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
+# conda install \
+# python=3.8 pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=11.8 -c pytorch -c nvidia
 ################################################################
 # pip install pandas
 # pip install scipy
@@ -72,13 +74,14 @@ class trainer :
 
 
     def __init__(self, device, nodes, windows, horizons, 
-                 revin_en, wavelet, h_channels, granularity, 
-                 graph_dims, diffusion_k, dropout, 
+                 revin_en, wavelets, level, h_channels, granularity, 
+                 graph_dims, diffusion_k, dropout, layer_tree, 
                  lrate, wdecay, scale) :
 
         self.model = STGNN_NN(device, nodes, windows, horizons, 
-                             revin_en, wavelet, h_channels, granularity, 
-                             graph_dims, diffusion_k, dropout)
+                              revin_en, wavelets, level, h_channels, granularity, 
+                              graph_dims, diffusion_k, dropout, layer_tree)
+        # self.model.load_state_dict(torch.load('/best_model.pth'))
         ### 模型放于cuda:0
         self.model.to(device)
 
@@ -164,7 +167,8 @@ def para_cfg() :
 
     # 数据变形
     parser.add_argument('--revin_en',           type=int, default=0)                # 0/1
-    parser.add_argument('--wavelet',            type=str, default='')               # ///
+    parser.add_argument('--wavelets',           type=str, default='')               # sym2/db1/db1/coif1
+    parser.add_argument('--level',              type=int, default=3)                # 2/3/4
     parser.add_argument('--h_channels',         type=int, default=96)               # 32/48/64/80/96
     parser.add_argument('--granularity',        type=int, default=288)              # 
 
@@ -174,6 +178,7 @@ def para_cfg() :
 
     # 
     parser.add_argument('--dropout',            type=float, default=0.5)            # 0.1/0.3/0.5
+    parser.add_argument('--layer_tree',         type=int,   default=1)              # 1/2/3
 
     # 训练参数
     parser.add_argument('--epochs',             type=int, default=1000)             # 1000
@@ -238,18 +243,20 @@ if __name__ == '__main__' :
         args.windows        = 168       # 168
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
-        args.wavelet        = ''        # 
+        args.wavelets       = 'haar dmey db4 sym4 coif4'
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 24        # 1day=24hrs=24/1=24
         args.graph_dims     = 10        # 
         args.diffusion_k    = 1         # 
         args.dropout        = 0.5       # 
+        args.layer_tree     = 1         # 
         args.epochs         = 10000
         args.learning_rate  = 0.0005    # 
         args.weight_decay   = 0.0001    # 
         args.cnt_log        = 50
         args.save_dir       = './logs/' + str(time.strftime('%Y-%m-%d-%H-%M-%S')) + '-'
-        args.es_patience    = 100
+        args.es_patience    = 50
     elif args.dataset == 'exchange_rate' :  # 
         # 
         # 服务器设置-2：数据集地址
@@ -262,18 +269,20 @@ if __name__ == '__main__' :
         args.windows        = 168       # 168
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
-        args.wavelet        = ''        # 
+        args.wavelets       = 'haar dmey db4 sym4 coif4'
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 1         # 1day=1/1=1
         args.graph_dims     = 10        # 
         args.diffusion_k    = 1         # 
         args.dropout        = 0.5       # 
+        args.layer_tree     = 1         # 
         args.epochs         = 10000
         args.learning_rate  = 0.0005    # 
         args.weight_decay   = 0.0001    # 
         args.cnt_log        = 50
         args.save_dir       = './logs/' + str(time.strftime('%Y-%m-%d-%H-%M-%S')) + '-'
-        args.es_patience    = 200
+        args.es_patience    = 300
     elif args.dataset == 'solar_AL' :  # 
         # 
         # 服务器设置-2：数据集地址
@@ -286,18 +295,20 @@ if __name__ == '__main__' :
         args.windows        = 168       # 168
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
-        args.wavelet        = ''        # 
+        args.wavelets       = 'haar dmey db4 sym4 coif4'
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 144       # 1day=24hrs=24*60mins=24*60/10=144
         args.graph_dims     = 10        # 
         args.diffusion_k    = 1         # 
         args.dropout        = 0.5       # 
+        args.layer_tree     = 1         # 
         args.epochs         = 10000
         args.learning_rate  = 0.0005    # 
         args.weight_decay   = 0.0001    # 
         args.cnt_log        = 50
         args.save_dir       = './logs/' + str(time.strftime('%Y-%m-%d-%H-%M-%S')) + '-'
-        args.es_patience    = 100
+        args.es_patience    = 20
     elif args.dataset == 'traffic' :  # 
         # 
         # 服务器设置-2：数据集地址
@@ -310,19 +321,24 @@ if __name__ == '__main__' :
         args.windows        = 168       # 168
         args.horizons       = 3         # 3/6/12/24 ### 调整
         args.revin_en       = 1         #           ### 调整
-        args.wavelet        = ''        # 
+        args.wavelets       = 'haar dmey db4 sym4 coif4'
+        args.level          = 2
         args.h_channels     = 16        #           ### 调整
         args.granularity    = 24        # 1day=24hrs=24/1=24
         args.graph_dims     = 10        # 
         args.diffusion_k    = 1         # 
         args.dropout        = 0.5       # 
+        args.layer_tree     = 1         # 
         args.epochs         = 10000
         args.learning_rate  = 0.0005    # 
         args.weight_decay   = 0.0001    # 
         args.cnt_log        = 50
         args.save_dir       = './logs/' + str(time.strftime('%Y-%m-%d-%H-%M-%S')) + '-'
-        args.es_patience    = 100
+        args.es_patience    = 50
     print(args)
+    if isinstance(args.wavelets, str) :
+        # 分割字符串并去除空值
+        args.wavelets = [w.strip() for w in args.wavelets.split() if w.strip()]
 
 
     # .txt ---- set_data: [L, W, N, 3] + [L, N]
@@ -353,8 +369,8 @@ if __name__ == '__main__' :
 
     # 训练器
     engine = trainer(device, args.nodes, args.windows, args.horizons, 
-                     args.revin_en, args.wavelet, args.h_channels, args.granularity, 
-                     args.graph_dims, args.diffusion_k, args.dropout, 
+                     args.revin_en, args.wavelets, args.level, args.h_channels, args.granularity, 
+                     args.graph_dims, args.diffusion_k, args.dropout, args.layer_tree, 
                      args.learning_rate, args.weight_decay, set_data.scale)
     # GPU上的损失计算函数，用于循环里的模型直接测试
     evaluatel1 = nn.L1Loss (size_average=False).to(device)
@@ -459,7 +475,7 @@ if __name__ == '__main__' :
         # 三集下降，则认为模型有效
         if valid_rse < min_valid_m_loss :  # 本轮验证集loss下降有效
 
-            if i < 10 :  # 百轮之内，模型大概率未收敛，只要降低了验证集mae，就认为模型有效
+            if i < 3 :  # 百轮之内，模型大概率未收敛，只要降低了验证集mae，就认为模型有效
 
                 bestid           = i
                 min_valid_m_loss = valid_rse
@@ -471,7 +487,7 @@ if __name__ == '__main__' :
                 cnt_updated = 0
 
 
-            elif i >= 10 :  # 百轮之后，继续进行测试集有效判断
+            elif i >= 3 :  # 百轮之后，继续进行测试集有效判断
 
                 test_total_loss_l1 = 0
                 test_total_loss_l2 = 0
